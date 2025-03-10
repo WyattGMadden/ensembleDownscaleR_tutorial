@@ -52,3 +52,7 @@ To reproduce all plots and tables in the publication, run the following R script
 
 `plots.R` depends on output from `tutorial.R`. `tables.R` depends on output from both `tutorial.R` and `additional_cv_fits.R`.
 
+Model fit objects are saved in `fits` directory. Plots and tables are saved in `figures_tables` directory. 
+
+
+
