@@ -34,7 +34,7 @@ cmaq_fit <- grm(
     spacetime.id = monitor_pm25_with_cmaq$spacetime_id,
     verbose.iter = 10
 )
-saveRDS(cmaq_fit, "output/fit_pred_objects/cmaq_fit.rds")
+saveRDS(cmaq_fit, "fits/cmaq_fit.rds")
 
 
 monitor_pm25_with_aod <- readRDS("data/monitor_pm25_with_aod.rds")
@@ -54,7 +54,7 @@ aod_fit <- grm(
     spacetime.id = monitor_pm25_with_aod$spacetime_id,
     verbose.iter = 10
 )
-saveRDS(aod_fit, "output/fit_pred_objects/aod_fit.rds")
+saveRDS(aod_fit, "fits/aod_fit.rds")
 
 
 
@@ -68,7 +68,7 @@ cv_id_cmaq_ord <- create_cv(
     spacetime.id = monitor_pm25_with_cmaq$spacetime_id,
     type = "ordinary"
 )
-saveRDS(cv_id_cmaq_ord, "output/fit_pred_objects/cv_id_cmaq_ord.rds")
+saveRDS(cv_id_cmaq_ord, "fits/cv_id_cmaq_ord.rds")
 
 
 cmaq_fit_cv <- grm_cv(
@@ -87,7 +87,7 @@ cmaq_fit_cv <- grm_cv(
     spacetime.id = monitor_pm25_with_cmaq$spacetime_id,
     verbose.iter = 10
 )
-saveRDS(cmaq_fit_cv, "output/fit_pred_objects/cmaq_fit_cv.rds")
+saveRDS(cmaq_fit_cv, "fits/cmaq_fit_cv.rds")
 
 
 cv_id_aod_ord <- create_cv(
@@ -96,7 +96,7 @@ cv_id_aod_ord <- create_cv(
     spacetime.id = monitor_pm25_with_aod$spacetime_id,
     type = "ordinary"
 )
-saveRDS(cv_id_aod_ord, "output/fit_pred_objects/cv_id_aod_ord.rds")
+saveRDS(cv_id_aod_ord, "fits/cv_id_aod_ord.rds")
 
 aod_fit_cv <- grm_cv(
     Y = monitor_pm25_with_aod$pm25,
@@ -114,7 +114,7 @@ aod_fit_cv <- grm_cv(
     spacetime.id = monitor_pm25_with_aod$spacetime_id,
     verbose.iter = 10
 )
-saveRDS(aod_fit_cv, "output/fit_pred_objects/aod_fit_cv.rds")
+saveRDS(aod_fit_cv, "fits/aod_fit_cv.rds")
 
 
 ###############
@@ -138,8 +138,7 @@ cmaq_pred <- grm_pred(
     verbose = T
 )
 
-saveRDS(cmaq_pred, "output/fit_pred_objects/cmaq_pred.rds")
-cmaq_pred <- readRDS("output/fit_pred_objects/cmaq_pred.rds")
+saveRDS(cmaq_pred, "fits/cmaq_pred.rds")
 
 
 
@@ -159,8 +158,7 @@ aod_pred <- grm_pred(
     verbose = T
 )
 
-saveRDS(aod_pred, "output/fit_pred_objects/aod_pred.rds")
-aod_pred <- readRDS("output/fit_pred_objects/aod_pred.rds")
+saveRDS(aod_pred, "fits/aod_pred.rds")
 
 
 # Stage 4
@@ -179,8 +177,7 @@ ensemble_fit <- ensemble_spatial(
 )
 
 
-saveRDS(ensemble_fit, "output/fit_pred_objects/ensemble_fit.rds")
-ensemble_fit <- readRDS("output/fit_pred_objects/ensemble_fit.rds")
+saveRDS(ensemble_fit, "fits/ensemble_fit.rds")
 
 
 # Other 
@@ -191,8 +188,7 @@ ensemble_preds_at_observations <- gap_fill(
     weights = ensemble_fit
 )
 
-saveRDS(ensemble_preds_at_observations, "output/fit_pred_objects/ensemble_preds_at_observations.rds")
-ensemble_preds_at_observations <- readRDS("output/fit_pred_objects/ensemble_preds_at_observations.rds")
+saveRDS(ensemble_preds_at_observations, "fits/ensemble_preds_at_observations.rds")
 
 # Stage 5
 
@@ -204,8 +200,7 @@ weight_preds <- weight_pred(
 )
 
 
-saveRDS(weight_preds, "output/fit_pred_objects/weight_preds.rds")
-weight_preds <- readRDS("output/fit_pred_objects/weight_preds.rds")
+saveRDS(weight_preds, "fits/weight_preds.rds")
 
 # Stage 6
 
@@ -214,14 +209,12 @@ results <- gap_fill(
     grm.pred.2 = aod_pred,
     weights = weight_preds)
 
-saveRDS(results, "output/fit_pred_objects/results.rds")
-results <- readRDS("output/fit_pred_objects/results.rds")
+saveRDS(results, "fits/results.rds")
 
 # stop timer
 end_time <- proc.time()
 total_runtime <- end_time - start_time
 total_hours <- ((total_runtime[1] + total_runtime[2]) / 60) / 60
-saveRDS(total_hours, "output/fit_pred_objects/total_hours.rds")
-total_hours <- readRDS("output/fit_pred_objects/total_hours.rds")
+saveRDS(total_hours, "fits/total_hours.rds")
 
 
