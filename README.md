@@ -10,7 +10,7 @@ All code is contained in the repository root directory. The `data` directory is 
 To download all data from Zenodo, either run the R script `download_zenodo_data.R` from the repository root directory:
 
 ```r
-source("scripts/download_zenodo_data.R")
+source("download_zenodo_data.R")
 ```
 
 download the data in the terminal with the following commands:
