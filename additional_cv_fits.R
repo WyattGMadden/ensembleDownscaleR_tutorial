@@ -6,11 +6,11 @@ set.seed(42)
 
 
 # Stage 1
-monitor_pm25_with_cmaq <- readRDS("../data/monitor_pm25_with_cmaq.rds")
-monitor_pm25_with_aod <- readRDS("../data/monitor_pm25_with_aod.rds")
+monitor_pm25_with_cmaq <- readRDS("data/monitor_pm25_with_cmaq.rds")
+monitor_pm25_with_aod <- readRDS("data/monitor_pm25_with_aod.rds")
 
-cmaq_fit <- readRDS("../output/fit_pred_objects/cmaq_fit.rds")
-aod_fit <- readRDS("../output/fit_pred_objects/aod_fit.rds")
+cmaq_fit <- readRDS("output/fit_pred_objects/cmaq_fit.rds")
+aod_fit <- readRDS("output/fit_pred_objects/aod_fit.rds")
 
 
 # Determine distances at which 0.7 and 0.3 spatial effect correlation
@@ -50,8 +50,8 @@ cv_id_aod_spat <- create_cv(
     spacetime.id = monitor_pm25_with_aod$spacetime_id
 )
 
-saveRDS(cv_id_cmaq_spat, "../output/additional_cv_fit_objects/cv_id_cmaq_spat.rds")
-saveRDS(cv_id_aod_spat, "../output/additional_cv_fit_objects/cv_id_aod_spat.rds")
+saveRDS(cv_id_cmaq_spat, "output/additional_cv_fit_objects/cv_id_cmaq_spat.rds")
+saveRDS(cv_id_aod_spat, "output/additional_cv_fit_objects/cv_id_aod_spat.rds")
 
 
 
@@ -72,8 +72,8 @@ cv_id_aod_spatclust <- create_cv(
 )
 
 
-saveRDS(cv_id_cmaq_spatclust, "../output/additional_cv_fit_objects/cv_id_cmaq_spatclust.rds")
-saveRDS(cv_id_aod_spatclust, "../output/additional_cv_fit_objects/cv_id_aod_spatclust.rds")
+saveRDS(cv_id_cmaq_spatclust, "output/additional_cv_fit_objects/cv_id_cmaq_spatclust.rds")
+saveRDS(cv_id_aod_spatclust, "output/additional_cv_fit_objects/cv_id_aod_spatclust.rds")
 
 
 cv_id_cmaq_spatbuff3 <- create_cv(
@@ -92,8 +92,8 @@ cv_id_aod_spatbuff3 <- create_cv(
     spacetime.id = monitor_pm25_with_aod$spacetime_id,
     coords = monitor_pm25_with_aod[, c("x", "y")]
 )
-saveRDS(cv_id_cmaq_spatbuff3, "../output/additional_cv_fit_objects/cv_id_cmaq_spatbuff3.rds")
-saveRDS(cv_id_aod_spatbuff3, "../output/additional_cv_fit_objects/cv_id_aod_spatbuff3.rds")
+saveRDS(cv_id_cmaq_spatbuff3, "output/additional_cv_fit_objects/cv_id_cmaq_spatbuff3.rds")
+saveRDS(cv_id_aod_spatbuff3, "output/additional_cv_fit_objects/cv_id_aod_spatbuff3.rds")
 
 
 cv_id_cmaq_spatbuff7 <- create_cv(
@@ -111,17 +111,17 @@ cv_id_aod_spatbuff7 <- create_cv(
     coords = monitor_pm25_with_aod[, c("x", "y")]
 )
 
-saveRDS(cv_id_cmaq_spatbuff7, "../output/additional_cv_fit_objects/cv_id_cmaq_spatbuff7.rds")
-saveRDS(cv_id_aod_spatbuff7, "../output/additional_cv_fit_objects/cv_id_aod_spatbuff7.rds")
+saveRDS(cv_id_cmaq_spatbuff7, "output/additional_cv_fit_objects/cv_id_cmaq_spatbuff7.rds")
+saveRDS(cv_id_aod_spatbuff7, "output/additional_cv_fit_objects/cv_id_aod_spatbuff7.rds")
 
 
 # Stage 3
 
-cmaq_for_predictions <- readRDS("../data/cmaq_for_predictions.rds")
-cmaq_pred <- readRDS("../output/fit_pred_objects/cmaq_pred.rds")
+cmaq_for_predictions <- readRDS("data/cmaq_for_predictions.rds")
+cmaq_pred <- readRDS("output/fit_pred_objects/cmaq_pred.rds")
 
-aod_for_predictions <- readRDS("../data/aod_for_predictions.rds")
-aod_pred <- readRDS("../output/fit_pred_objects/aod_pred.rds")
+aod_for_predictions <- readRDS("data/aod_for_predictions.rds")
+aod_pred <- readRDS("output/fit_pred_objects/aod_pred.rds")
 
 
 
@@ -238,7 +238,7 @@ additional_cv_formulations(
     aod_pred = aod_pred,
     cv_id_cmaq = cv_id_cmaq_spat,
     cv_id_aod = cv_id_aod_spat,
-    save_dir = "../output/additional_cv_fit_objects/",
+    save_dir = "output/additional_cv_fit_objects/",
     n.iter = n.iter,
     burn = burn,
     thin = thin
@@ -253,7 +253,7 @@ additional_cv_formulations(
     aod_pred = aod_pred,
     cv_id_cmaq = cv_id_cmaq_spatclust,
     cv_id_aod = cv_id_aod_spatclust,
-    save_dir = "../output/additional_cv_fit_objects/",
+    save_dir = "output/additional_cv_fit_objects/",
     n.iter = n.iter,
     burn = burn,
     thin = thin
@@ -269,7 +269,7 @@ additional_cv_formulations(
     aod_pred = aod_pred,
     cv_id_cm = cv_id_cmaq_spatbuff3,
     cv_id_aod = cv_id_aod_spatbuff3,
-    save_dir = "../output/additional_cv_fit_objects/",
+    save_dir = "output/additional_cv_fit_objects/",
     n.iter = n.iter,
     burn = burn,
     thin = thin
@@ -284,7 +284,7 @@ additional_cv_formulations(
     aod_pred = aod_pred,
     cv_id_cmaq = cv_id_cmaq_spatbuff7,
     cv_id_aod = cv_id_aod_spatbuff7,
-    save_dir = "../output/additional_cv_fit_objects/",
+    save_dir = "output/additional_cv_fit_objects/",
     n.iter = n.iter,
     burn = burn,
     thin = thin
