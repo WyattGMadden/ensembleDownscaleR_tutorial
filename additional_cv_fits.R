@@ -139,9 +139,9 @@ additional_cv_formulations <- function(
     cv_id_cmaq,
     cv_id_aod,
     save_dir,
-    n.iter = 2500,
-    burn = 500,
-    thin = 4
+    n.iter = 25000,
+    burn = 5000,
+    thin = 20
 ) {
     cmaq_fit_cv <- grm_cv(
         Y = monitor_pm25_with_cmaq$pm25,
@@ -225,9 +225,9 @@ additional_cv_formulations <- function(
         )
     )
 }
-n.iter <- 2500
-burn <- 500
-thin <- 4
+n.iter <- 25000
+burn <- 5000
+thin <- 20
 
 additional_cv_formulations(
     monitor_pm25_with_cmaq = monitor_pm25_with_cmaq,
