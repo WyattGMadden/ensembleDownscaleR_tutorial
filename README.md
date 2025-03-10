@@ -4,6 +4,15 @@ This repo contains the *ensembleDownscaleR* code tutorial and code for replicati
 
 All code is contained in the repository root directory. The `data` directory is empty and needs to be populated with the data downloaded from Zenodo.
 
+## Install Package
+
+To install the *ensembleDownscaleR* package, run the following commands in R:
+
+```r
+install.packages("devtools")
+devtools::install_github("WyattGMadden/ensembleDownscaleR")
+```
+
 
 ## Download Data
 
