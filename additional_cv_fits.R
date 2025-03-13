@@ -99,6 +99,7 @@ saveRDS(cv_id_aod_spatbuff3, "fits/cv_id_aod_spatbuff3.rds")
 cv_id_cmaq_spatbuff7 <- create_cv(
     space.id = monitor_pm25_with_cmaq$space_id,
     time.id = monitor_pm25_with_cmaq$time_id, 
+    spacetime.id = monitor_pm25_with_cmaq$spacetime_id,
     type = "spatial_buffered",
     coords = monitor_pm25_with_cmaq[, c("x", "y")],
     buffer.size = buffer_7
@@ -108,6 +109,7 @@ cv_id_aod_spatbuff7 <- create_cv(
     create.from = cv_id_cmaq_spatbuff7,
     space.id = monitor_pm25_with_aod$space_id,
     time.id = monitor_pm25_with_aod$time_id, 
+    spacetime.id = monitor_pm25_with_aod$spacetime_id,
     coords = monitor_pm25_with_aod[, c("x", "y")]
 )
 
