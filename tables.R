@@ -178,19 +178,3 @@ writeLines(
     "figures_tables/pred_obs_full_metrics_table.tex"
 )
 
-
-###############
-### Runtime ###
-###############
-
-minutestime <- runtime['elapsed'] / 60
-hourstime <- minutestime / 60
-
-
-
-
-
-
-
-
-
