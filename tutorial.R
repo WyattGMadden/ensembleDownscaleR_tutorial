@@ -5,6 +5,8 @@ set.seed(42)
 # start timer
 start_time <- proc.time()
 
+
+
 ###############
 ### Stage 1 ###
 ###############
@@ -62,6 +64,51 @@ saveRDS(aod_fit, "fits/aod_fit.rds")
 ### Stage 2 ###
 ###############
 
+cmaq_for_predictions <- readRDS("data/cmaq_for_predictions.rds")
+
+
+cmaq_pred <- grm_pred(
+    grm.fit = cmaq_fit,
+    X = cmaq_for_predictions$cmaq,
+    L = cmaq_for_predictions[, c("elevation", "population")],
+    M = cmaq_for_predictions[, c("cloud", "v_wind", "hpbl",
+                                 "u_wind", "short_rf", "humidity_2m")],
+    coords = cmaq_for_predictions[, c("x", "y")],
+    space.id = cmaq_for_predictions$space_id,
+    time.id = cmaq_for_predictions$time_id,
+    spacetime.id = cmaq_for_predictions$spacetime_id,
+    n.iter = n.iter.pred,
+    verbose = T
+)
+
+saveRDS(cmaq_pred, "fits/cmaq_pred.rds")
+
+
+
+aod_for_predictions <- readRDS("data/aod_for_predictions.rds")
+
+aod_pred <- grm_pred(
+    grm.fit = aod_fit,
+    X = aod_for_predictions$aod,
+    L = aod_for_predictions[, c("elevation", "population")],
+    M = aod_for_predictions[, c("cloud", "v_wind", "hpbl", 
+                                        "u_wind", "short_rf", "humidity_2m")],
+    coords = aod_for_predictions[, c("x", "y")],
+    space.id = aod_for_predictions$space_id,
+    time.id = aod_for_predictions$time_id,
+    spacetime.id = aod_for_predictions$spacetime_id,
+    n.iter = n.iter.pred,
+    verbose = T
+)
+
+saveRDS(aod_pred, "fits/aod_pred.rds")
+
+
+
+###############
+### Stage 3 ###
+###############
+
 cv_id_cmaq_ord <- create_cv(
     time.id = monitor_pm25_with_cmaq$time_id, 
     space.id = monitor_pm25_with_cmaq$space_id,
@@ -117,51 +164,10 @@ aod_fit_cv <- grm_cv(
 saveRDS(aod_fit_cv, "fits/aod_fit_cv.rds")
 
 
+
 ###############
-### Stage 2 ###
+### Stage 4 ###
 ###############
-
-cmaq_for_predictions <- readRDS("data/cmaq_for_predictions.rds")
-
-
-cmaq_pred <- grm_pred(
-    grm.fit = cmaq_fit,
-    X = cmaq_for_predictions$cmaq,
-    L = cmaq_for_predictions[, c("elevation", "population")],
-    M = cmaq_for_predictions[, c("cloud", "v_wind", "hpbl",
-                                 "u_wind", "short_rf", "humidity_2m")],
-    coords = cmaq_for_predictions[, c("x", "y")],
-    space.id = cmaq_for_predictions$space_id,
-    time.id = cmaq_for_predictions$time_id,
-    spacetime.id = cmaq_for_predictions$spacetime_id,
-    n.iter = n.iter.pred,
-    verbose = T
-)
-
-saveRDS(cmaq_pred, "fits/cmaq_pred.rds")
-
-
-
-aod_for_predictions <- readRDS("data/aod_for_predictions.rds")
-
-aod_pred <- grm_pred(
-    grm.fit = aod_fit,
-    X = aod_for_predictions$aod,
-    L = aod_for_predictions[, c("elevation", "population")],
-    M = aod_for_predictions[, c("cloud", "v_wind", "hpbl", 
-                                        "u_wind", "short_rf", "humidity_2m")],
-    coords = aod_for_predictions[, c("x", "y")],
-    space.id = aod_for_predictions$space_id,
-    time.id = aod_for_predictions$time_id,
-    spacetime.id = aod_for_predictions$spacetime_id,
-    n.iter = n.iter.pred,
-    verbose = T
-)
-
-saveRDS(aod_pred, "fits/aod_pred.rds")
-
-
-# Stage 4
 
 ensemble_fit <- ensemble_spatial(
     grm.fit.cv.1 = cmaq_fit_cv,
@@ -180,7 +186,10 @@ ensemble_fit <- ensemble_spatial(
 saveRDS(ensemble_fit, "fits/ensemble_fit.rds")
 
 
-# Other 
+
+##############
+### Other ####
+##############
 
 ensemble_preds_at_observations <- gap_fill(
     grm.pred.1 = cmaq_fit_cv,
@@ -190,7 +199,12 @@ ensemble_preds_at_observations <- gap_fill(
 
 saveRDS(ensemble_preds_at_observations, "fits/ensemble_preds_at_observations.rds")
 
-# Stage 5
+
+
+
+###############
+### Stage 5 ###
+###############
 
 weight_preds <- weight_pred(
     ensemble.fit = ensemble_fit,
@@ -202,7 +216,12 @@ weight_preds <- weight_pred(
 
 saveRDS(weight_preds, "fits/weight_preds.rds")
 
-# Stage 6
+
+
+
+###############
+### Stage 6 ###
+###############
 
 results <- gap_fill(
     grm.pred.1 = cmaq_pred,

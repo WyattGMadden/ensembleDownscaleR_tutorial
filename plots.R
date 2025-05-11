@@ -122,8 +122,24 @@ full_aod_preds <- aod_for_predictions |>
 ### Stage 2 Plot ###
 ####################
 date_use <- "2018-07-15"
+one_day_cmaq <- full_cmaq_preds |>
+    filter(date == date_use,
+           !is.na(estimate))
+one_day_aod <- full_aod_preds |>
+    filter(date == date_use,
+           !is.na(estimate))
+
+min_cmaq_pred <- min(one_day_cmaq$estimate, na.rm = TRUE)
+min_aod_pred <- min(one_day_aod$estimate, na.rm = TRUE)
+max_cmaq_pred <- max(one_day_cmaq$estimate, na.rm = TRUE)
+max_aod_pred <- max(one_day_aod$estimate, na.rm = TRUE)
+
+min_pred <- min(min_cmaq_pred, min_aod_pred)
+max_pred <- max(max_cmaq_pred, max_aod_pred)
+
 latbuffer <- 0
 lonbuffer <- 0
+
 cmaqpredplt <- full_cmaq_preds |>
     filter(date == date_use,
            !is.na(estimate)) |>
@@ -132,7 +148,7 @@ cmaqpredplt <- full_cmaq_preds |>
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_tile(linewidth = .5) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(min_pred, max_pred), breaks = seq(5, 20, by = 5)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(title = "CTM-Based PM2.5 Predictions",
@@ -167,7 +183,7 @@ aodpredplt <- full_aod_preds |>
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_tile(linewidth = .5) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(min_pred, max_pred), breaks = seq(5, 20, by = 5)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(title = "AOD-Based PM2.5 Predictions",
@@ -212,15 +228,42 @@ ggsave(
 ### Stage 4 Plot ###
 ####################
 
+one_day_monitor_pm25_with_cmaq <- monitor_pm25_with_cmaq |>
+    filter(date == date_use)
+
+one_day_cmaq_est <- monitor_pm25_with_cmaq |>
+    left_join(cmaq_fit_cv, 
+              by = c("time_id" = "time.id", 
+                     "space_id" = "space.id", 
+                     "spacetime_id" = "spacetime.id")) |>
+    filter(date == date_use)
+
+one_day_aod_est <- monitor_pm25_with_aod |>
+    left_join(aod_fit_cv,
+              by = c("time_id" = "time.id", 
+                     "space_id" = "space.id", 
+                     "spacetime_id" = "spacetime.id")) |>
+    filter(date == date_use)
+
+min_monitor_pm25 <- min(one_day_monitor_pm25_with_cmaq$pm25, na.rm = TRUE)
+min_cmaq_est <- min(one_day_cmaq_est$estimate, na.rm = TRUE)
+min_aod_est <- min(one_day_aod_est$estimate, na.rm = TRUE)
+max_monitor_pm25 <- max(one_day_monitor_pm25_with_cmaq$pm25, na.rm = TRUE)
+max_cmaq_est <- max(one_day_cmaq_est$estimate, na.rm = TRUE)
+max_aod_est <- max(one_day_aod_est$estimate, na.rm = TRUE)
+
+min_est <- min(min_monitor_pm25, min_cmaq_est, min_aod_est)
+max_est <- max(max_monitor_pm25, max_cmaq_est, max_aod_est)
+
+
 size_use <- 2.5
-stage4aplt <- monitor_pm25_with_cmaq |>
-    filter(date == date_use) |>
+stage4aplt <- one_day_monitor_pm25_with_cmaq |>
     ggplot(aes(x = longitude, y = latitude, colour = pm25)) +
     geom_polygon(data = ca_map, 
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_point(size = size_use) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(min_est, max_est), breaks = seq(5, 15, by = 5)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(x = "Longitude",
@@ -230,18 +273,13 @@ stage4aplt <- monitor_pm25_with_cmaq |>
     theme(legend.position = "bottom",
           legend.direction = "horizontal")
 
-stage4bplt <- monitor_pm25_with_cmaq |>
-    left_join(cmaq_fit_cv, 
-              by = c("time_id" = "time.id", 
-                     "space_id" = "space.id", 
-                     "spacetime_id" = "spacetime.id")) |>
-    filter(date == date_use) |>
+stage4bplt <- one_day_cmaq_est |>
     ggplot(aes(x = longitude, y = latitude, colour = estimate)) +
     geom_polygon(data = ca_map, 
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_point(size = size_use) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(min_est, max_est), breaks = seq(5, 15, by = 5)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(x = "Longitude",
@@ -251,18 +289,13 @@ stage4bplt <- monitor_pm25_with_cmaq |>
     theme(legend.position = "bottom",
           legend.direction = "horizontal")
 
-stage4cplt <- monitor_pm25_with_aod |>
-    left_join(aod_fit_cv,
-              by = c("time_id" = "time.id", 
-                     "space_id" = "space.id", 
-                     "spacetime_id" = "spacetime.id")) |>
-    filter(date == date_use) |>
+stage4cplt <- one_day_aod_est |>
     ggplot(aes(x = longitude, y = latitude, colour = estimate)) +
     geom_polygon(data = ca_map, 
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_point(size = size_use) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(min_est, max_est), breaks = seq(5, 15, by = 5)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(x = "Longitude",
@@ -285,7 +318,7 @@ stage4dplt <- monitor_pm25_with_cmaq |>
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black") +
     geom_point(size = size_use) +
-    scale_color_viridis_c() +
+    scale_color_viridis_c(limits = c(0.2, 1), breaks = seq(0.4, 0.8, by = 0.2)) +
     coord_cartesian(xlim = c(minlon - lonbuffer, maxlon + lonbuffer), 
                     ylim = c(minlat - latbuffer, maxlat + latbuffer)) +
     labs(x = "Longitude",
